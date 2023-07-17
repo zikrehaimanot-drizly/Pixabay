@@ -25,12 +25,24 @@ app.get('/search', async (req, res) => {
     });
  
     // hardcoding that key is awful :( will try to refactor later on
-    console.log(`${response} backend`)
+    // console.log(`${response} backend`)
     res.json(response.data);
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Failed to perform the search' });
   }
+});
+
+app.get('/imageDetails', (req, res) => {
+  const imageDetails = {
+    id: req.query.id,
+    imageUrl: req.query.imageUrl,
+    imagePoster: req.query.imagePoster,
+    imageTags: req.query.imageTags
+  };
+  // console.log(`${imageDetails} ImageDetails`)
+
+  res.render('imageDetails', { image: imageDetails });
 });
 
 app.listen(port, () => {

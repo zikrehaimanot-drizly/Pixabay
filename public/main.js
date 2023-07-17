@@ -1,20 +1,30 @@
 const searchButton = document.getElementById('searchButton');
 const moreResultsButton = document.getElementById('nextPageOfResults');
 const imageContainer = document.getElementById('imageContainer');
-let pageCount = 0
+let pageCount = 1;
 
-searchButton.addEventListener('click', () => {
-  let searchTerm = document.getElementById('input').value;
+function fetchAndRenderImages(searchTerm) {
   fetch(`/search?term=${encodeURIComponent(searchTerm)}&page=${pageCount}`)
     .then(response => response.json())
     .then(data => {
-      pageCount+= 1
-      console.log(data)
-      images = data.hits
+      pageCount += 1;
+      console.log(data);
+      const images = data.hits;
+
+      imageContainer.innerHTML = '';
       images.forEach(image => {
         const liElement = document.createElement('li');
         const imgElement = document.createElement('img');
         imgElement.src = image.webformatURL;
+        imgElement.addEventListener('click', () => {
+          const queryParams = new URLSearchParams({
+            id: image.id,
+            imageUrl: image.webformatURL,
+            imagePoster: image.user,
+            imageTags: image.tags
+          });
+          window.location.href = `/imageDetails?${queryParams.toString()}`;
+        });
         liElement.appendChild(imgElement);
         imageContainer.appendChild(liElement);
       });
@@ -22,29 +32,14 @@ searchButton.addEventListener('click', () => {
     .catch(error => {
       console.error('Error:', error);
     });
+}
 
+searchButton.addEventListener('click', () => {
+  const searchTerm = document.getElementById('input').value;
+  fetchAndRenderImages(searchTerm);
 });
 
 moreResultsButton.addEventListener('click', () => {
-  let searchTerm = document.getElementById('input').value;
-  console.log(pageCount)
-  fetch(`/search?term=${encodeURIComponent(searchTerm)}&page=${pageCount}`)
-    .then(response => response.json())
-    .then(data => {
-      pageCount+= 1
-      console.log(data)
-      imageContainer.innerHTML = '';
-      images = data.hits
-      images.forEach(image => {
-        const liElement = document.createElement('li');
-        const imgElement = document.createElement('img');
-        imgElement.src = image.webformatURL;
-        liElement.appendChild(imgElement);
-        imageContainer.appendChild(liElement);
-      });
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-
+  const searchTerm = document.getElementById('input').value;
+  fetchAndRenderImages(searchTerm);
 });
