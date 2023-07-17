@@ -12,24 +12,27 @@ app.get('/', (req, res) => {
 });
 
 app.get('/search', async (req, res) => {
-  console.log(req.query.page)
+  console.log(req.query.page);
   try {
-
-    const response = await axios.get('https://pixabay.com/api/', {  
-    params: {
+    const response = await axios.get('https://pixabay.com/api/', {
+      params: {
         key: '38313297-0251fd09df47623d4d840ebec',
         q: req.query.term,
         image_type: 'photo',
-        page: req.query.page
-      }
+        page: req.query.page,
+      },
     });
- 
-    // hardcoding that key is awful :( will try to refactor later on
-    // console.log(`${response} backend`)
-    res.json(response.data);
+
+    if (response.status === 200) {
+      res.json(response.data);
+    } else {
+      const errorMessage = 'Try a different word/API response issues';
+      res.status(response.status).json({ error: errorMessage });
+    }
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: 'Failed to perform the search' });
+    const errorMessage = 'Failed to perform the search/Issue could stem from our system or theirs';
+    res.status(500).json({ error: errorMessage });
   }
 });
 
