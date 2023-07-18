@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const axios = require('axios');
@@ -21,6 +22,8 @@ app.get('/search', async (req, res) => {
 
     if (imageCache.has(cacheKey)) {
       console.log('cache is indeed working')
+      //cache currently works when you either refresh the page or when you go into itemdetails then go back to the general home page
+      // this happens because when you refresh the page the count doesn't changem same with item details to homepage flow
       const cachedData = imageCache.get(cacheKey);
       res.json(cachedData);
       return;
@@ -28,7 +31,7 @@ app.get('/search', async (req, res) => {
 
     const response = await axios.get('https://pixabay.com/api/', {
       params: {
-        key: '38313297-0251fd09df47623d4d840ebec',
+        key: process.env.PIXABAY_API_KEY,
         q: req.query.term,
         image_type: 'photo',
         page: req.query.page,
