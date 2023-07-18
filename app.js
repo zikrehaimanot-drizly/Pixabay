@@ -68,6 +68,4 @@ app.get('/imageDetails', (req, res) => {
   res.render('imageDetails', { image: imageDetails });
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+app.listen(process.env.PORT || port)
