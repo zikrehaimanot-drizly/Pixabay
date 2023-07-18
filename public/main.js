@@ -1,11 +1,13 @@
 const searchButton = document.getElementById('searchButton');
 const moreResultsButton = document.getElementById('nextPageOfResults');
+const prevResultsButton = document.getElementById('prevPageOfResults');
 const imageContainer = document.getElementById('imageContainer');
 let previousSearchTerm = '';
 let previousLanguage = '';
 let pageCount = 1;
 
 function fetchAndRenderImages(searchTerm, selectedLanguage) {
+  console.log(`${pageCount} thisi spage count`)
   fetch(`/search?term=${encodeURIComponent(searchTerm)}&page=${pageCount}&lang=${selectedLanguage}`)
     .then(response => {
       if (!response.ok) {
@@ -64,5 +66,20 @@ function handleSearch() {
   previousLanguage = selectedLanguage;
 }
 
+
+function handlePrevSearch() {
+  // for some reason decrementing by 2 works on the surface, im not sure why..might be worth exploring during a chat but its late now
+  //this will be last commit and includes minor css changes and trying to debug this edge case when i added the prevsearch button
+  const searchTerm = document.getElementById('input').value;
+  const selectedLanguage = document.getElementById('languageDropdown').value;
+  pageCount = pageCount - 2
+  fetchAndRenderImages(searchTerm, selectedLanguage);
+ 
+
+  previousSearchTerm = searchTerm;
+  previousLanguage = selectedLanguage;
+}
+
 searchButton.addEventListener('click', handleSearch);
 moreResultsButton.addEventListener('click', handleSearch);
+prevResultsButton.addEventListener('click', handlePrevSearch);
