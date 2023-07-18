@@ -7,6 +7,9 @@ app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
 
+// Create an in-memory cache
+const imageCache = new Map();
+
 app.get('/', (req, res) => {
   res.render('index'); 
 });
@@ -14,6 +17,15 @@ app.get('/', (req, res) => {
 app.get('/search', async (req, res) => {
   console.log(req.query.page);
   try {
+    const cacheKey = `${req.query.term}_${req.query.page}_${req.query.lang}`;
+
+    if (imageCache.has(cacheKey)) {
+      console.log('cache is indeed working')
+      const cachedData = imageCache.get(cacheKey);
+      res.json(cachedData);
+      return;
+    }
+
     const response = await axios.get('https://pixabay.com/api/', {
       params: {
         key: '38313297-0251fd09df47623d4d840ebec',
@@ -25,7 +37,11 @@ app.get('/search', async (req, res) => {
     });
 
     if (response.status === 200) {
-      res.json(response.data);
+      const imageData = response.data;
+
+      imageCache.set(cacheKey, imageData);
+
+      res.json(imageData);
     } else {
       const errorMessage = 'Try a different word/API response issues';
       res.status(response.status).json({ error: errorMessage });

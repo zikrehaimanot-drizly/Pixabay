@@ -1,9 +1,10 @@
 const searchButton = document.getElementById('searchButton');
 const moreResultsButton = document.getElementById('nextPageOfResults');
 const imageContainer = document.getElementById('imageContainer');
+let previousSearchTerm = '';
+let previousLanguage = '';
 let pageCount = 1;
 
-// edge case -- if you switch search term you should have the pageCount restart - may or may not come back to this dpending on priorites
 function fetchAndRenderImages(searchTerm, selectedLanguage) {
   fetch(`/search?term=${encodeURIComponent(searchTerm)}&page=${pageCount}&lang=${selectedLanguage}`)
     .then(response => {
@@ -52,7 +53,15 @@ function fetchAndRenderImages(searchTerm, selectedLanguage) {
 function handleSearch() {
   const searchTerm = document.getElementById('input').value;
   const selectedLanguage = document.getElementById('languageDropdown').value;
+
+  if (searchTerm !== previousSearchTerm || selectedLanguage !== previousLanguage) {
+    pageCount = 1;
+  }
+
   fetchAndRenderImages(searchTerm, selectedLanguage);
+
+  previousSearchTerm = searchTerm;
+  previousLanguage = selectedLanguage;
 }
 
 searchButton.addEventListener('click', handleSearch);
