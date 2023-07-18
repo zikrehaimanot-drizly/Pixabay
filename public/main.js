@@ -3,8 +3,9 @@ const moreResultsButton = document.getElementById('nextPageOfResults');
 const imageContainer = document.getElementById('imageContainer');
 let pageCount = 1;
 
-function fetchAndRenderImages(searchTerm) {
-  fetch(`/search?term=${encodeURIComponent(searchTerm)}&page=${pageCount}`)
+// edge case -- if you switch search term you should have the pageCount restart - may or may not come back to this dpending on priorites
+function fetchAndRenderImages(searchTerm, selectedLanguage) {
+  fetch(`/search?term=${encodeURIComponent(searchTerm)}&page=${pageCount}&lang=${selectedLanguage}`)
     .then(response => {
       if (!response.ok) {
         throw new Error(response.statusText);
@@ -48,13 +49,11 @@ function fetchAndRenderImages(searchTerm) {
     });
 }
 
-
-searchButton.addEventListener('click', () => {
+function handleSearch() {
   const searchTerm = document.getElementById('input').value;
-  fetchAndRenderImages(searchTerm);
-});
+  const selectedLanguage = document.getElementById('languageDropdown').value;
+  fetchAndRenderImages(searchTerm, selectedLanguage);
+}
 
-moreResultsButton.addEventListener('click', () => {
-  const searchTerm = document.getElementById('input').value;
-  fetchAndRenderImages(searchTerm);
-});
+searchButton.addEventListener('click', handleSearch);
+moreResultsButton.addEventListener('click', handleSearch);

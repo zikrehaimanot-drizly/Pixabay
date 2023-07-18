@@ -20,6 +20,7 @@ app.get('/search', async (req, res) => {
         q: req.query.term,
         image_type: 'photo',
         page: req.query.page,
+        lang: req.query.lang
       },
     });
 
