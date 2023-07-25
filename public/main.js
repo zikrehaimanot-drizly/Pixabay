@@ -6,8 +6,8 @@ let previousSearchTerm = '';
 let previousLanguage = '';
 var pageCount = 0;
 
-function fetchAndRenderImages(searchTerm, selectedLanguage) {
-  pageCount += 1;
+function fetchAndRenderImages(searchTerm, selectedLanguage, pageCount) {
+  // pageCount += 1;
   console.log(`${pageCount} this is page count when we make the call`)
   fetch(`/search?term=${encodeURIComponent(searchTerm)}&page=${pageCount}&lang=${selectedLanguage}`)
     .then(response => {
@@ -64,7 +64,8 @@ function handleSearch() {
     pageCount = 0;
   }
   console.log(`${pageCount} right before we call fetchimage during more pic call`)
-  fetchAndRenderImages(searchTerm, selectedLanguage);
+  pageCount += 1
+  fetchAndRenderImages(searchTerm, selectedLanguage, pageCount);
 
   previousSearchTerm = searchTerm;
   previousLanguage = selectedLanguage;
@@ -77,9 +78,9 @@ function handlePrevSearch() {
   const searchTerm = document.getElementById('input').value;
   const selectedLanguage = document.getElementById('languageDropdown').value;
   console.log(`${pageCount} right before we atttempt subtracting`)
-  pageCount = pageCount - 2
+  pageCount = pageCount - 1
   console.log(`${pageCount}, this is count after we've subtracted from count`)
-  fetchAndRenderImages(searchTerm, selectedLanguage);
+  fetchAndRenderImages(searchTerm, selectedLanguage, pageCount);
  
 
   previousSearchTerm = searchTerm;
